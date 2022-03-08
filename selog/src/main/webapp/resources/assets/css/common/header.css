@@ -1,0 +1,73 @@
+@charset "UTF-8";
+
+/* #dropBtn {
+	display: none;
+}
+#dropBtn:checked ~ .dropBtn-myMenu {
+	display: block; 
+} 
+.dropBtn-myMenu {
+	display: none;
+	text-decoration: none;
+} */
+.drop_menu {
+	cursor: pointer;
+}
+
+.drop_hide {
+	display: none;
+	text-decoration: none;
+}
+
+.drop_div {
+    position: absolute;
+    top: 100%;
+    margin-top: 1rem;
+    right: 0px;
+}
+
+.drop_div > .menu_wrapper {
+	position: relative;
+    z-index: 5;
+    width: 12rem;
+/*     height: 5px; */
+    background: white;
+    box-shadow: rgb(0 0 0 / 10%) 0px 0px 8px;
+}
+
+.drop_a {
+	color: inherit;
+    text-decoration: none;
+}
+
+.drop_con {
+	color: rgb(33, 37, 41);
+    padding: 0.75rem 1rem;
+    line-height: 1.5;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.drop_con:hover {
+/* 	background-color: #F8F9FA; */
+	color: black;
+	font-weight:bold; 
+}
+
+#check_m_id, #check_m_pwd {
+	margin-left: 15px;
+	font-size: 13px;
+}
+
+#sign_in_fail_msg {
+	color: red;
+	font-weight: bold;
+	margin-left: 15px;
+	margin-right: 140px;
+}
+
+.profileImg {
+	object-fit: cover;
+    border-radius: 70%;
+/*     border-radius: 50%; */
+}

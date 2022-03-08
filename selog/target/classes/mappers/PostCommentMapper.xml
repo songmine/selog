@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.song.selog.post.mapper.PostCommentMapper">
+
+	<insert id="insert">
+		INSERT INTO post_comment(c_id, p_id, c_content, m_id)
+		VALUES (post_comment_seq.NEXTVAL, #{p_id}, #{c_content}, #{m_id})
+	</insert>
+	
+	<select id="read" resultType="io.song.selog.post.domain.PostCommentDTO">
+		SELECT *
+		FROM post_comment
+		WHERE c_id = #{c_id}
+	</select>
+		
+	<update id="modify">
+		UPDATE post_comment
+		SET c_content=#{c_content}, c_updated_at=SYSDATE
+		WHERE c_id = #{c_id}  
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM post_comment
+		WHERE c_id = #{c_id} 
+	</delete>
+
+	<select id="getList" resultType="io.song.selog.post.domain.PostCommentDTO">
+		SELECT c_id,
+		       pc.p_id,
+		       c_content,
+		       pc.m_id,
+		       c_published_at,
+		       c_updated_at,
+		       m.m_pic
+		FROM post_comment pc JOIN member m ON pc.m_id = m.m_id
+	    WHERE p_id=#{p_id} 
+	    ORDER BY c_id ASC 
+	</select>
+		
+	<select id="getCommentCntByP_Id" resultType="int">
+      <![CDATA[
+	      SELECT COUNT(c_id) 
+	      FROM  post_comment 
+	      WHERE p_id=#{p_id} 
+      ]]>
+    </select>
+   
+    <delete id="deleteAllComment">
+    	DELETE FROM post_comment
+    	WHERE p_id=#{p_id} 
+    </delete> 
+    
+    <select id="myCommentList" resultType="io.song.selog.post.domain.PostCommentDTO">
+    	SELECT DISTINCT p_id
+		FROM post_comment
+		WHERE m_id=#{m_id}
+    </select>
+
+</mapper>

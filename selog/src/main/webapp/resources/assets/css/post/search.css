@@ -1,0 +1,224 @@
+@charset "UTF-8";
+
+.search_wrapper {
+	margin-top: 3.5rem;
+    width: 768px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.search_box {
+    margin-bottom: 1.5rem;
+    display: flex;
+    border: 1px solid rgb(173, 181, 189);
+    -webkit-box-align: center;
+    align-items: center;
+    transition: all 0.125s ease-in 0s;
+    cursor: text;
+    height: 4rem;
+    padding: 0px 1.5rem;
+}
+
+.search_box img {
+    margin-right: 1.25rem;
+    transition: all 0.125s ease-in 0s;
+    margin-right: 20px;
+    width: 22px;
+    height: 22px;
+    fill: rgb(173, 181, 189);
+    flex-shrink: 0;
+    filter: opacity(0.4) drop-shadow(0 0 0 gray);
+}
+
+.search_box input::-webkit-input-placeholder {
+	color: rgba(173, 181, 189, 0.9);
+}
+
+.search_box input {
+    height: 2rem;
+    color: rgb(33, 37, 41);
+    transition: all 0.125s ease-in 0s;
+    font-size: 24px;
+    flex: 1 1 0%;
+    display: block;
+    line-height: 32px;
+    padding: 0px;
+    border: none;
+    outline: 0px;
+    color: rgb(73, 80, 87);
+    min-width: 0px;
+    font-family: inherit;
+    background-color: transparent;
+}
+
+.search_cnt {
+    margin-bottom: 4rem;
+    font-size: 1.125rem;
+    line-height: 1.5;
+    color: rgb(73, 80, 87);
+}
+
+.search_cnt b {
+    color: rgb(33, 37, 41);
+}
+
+.result_list:first-child {
+	padding-top: 0px;
+}
+
+.result_list {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    line-height: 1.5;
+}
+
+.result_list .user_info {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.for_boarder_top + .result_list {
+	border-top: 1px solid rgb(233, 236, 239);
+}
+
+.user_info img {
+    width: 3rem;
+    height: 3rem;
+    display: block;
+    margin-right: 1rem;
+    background: rgb(248, 249, 250);
+    object-fit: cover;
+    border-radius: 1.5rem;
+    box-shadow: rgb(0 0 0 / 10%) 0px 0px 8px;
+}
+
+.user_info .username {
+	font-size: 0.875rem;
+    color: rgb(33, 37, 41);
+    font-weight: bold;
+}
+
+.user_info .username a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.result_list > a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.result_list h2 {
+    font-size: 1.5rem;
+    margin: 0px;
+    color: rgb(33, 37, 41);
+    word-break: keep-all;
+    font-weight: bold;
+}
+
+.result_thumbnail {
+    margin-bottom: 1rem;
+    width: 100%;
+    position: relative;
+    padding-top: 52.35602094240838%;
+}
+
+.result_thumbnail img {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.result_list p {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.search_content {
+    margin-bottom: 2rem;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: rgb(73, 80, 87);
+    word-break: keep-all;
+    overflow-wrap: break-word;
+
+    line-height: 24px;
+    height: 69px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+/*     text-overflow: ellipsis; */
+}
+
+.search_content * {
+	font-size: 16px !important;
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
+}
+.search_content *:hover {
+	text-decoration: none;
+}
+
+.tag_wrapper {
+    margin-bottom: -0.875rem;
+}
+
+.tag_a {
+    margin-bottom: 0.875rem;
+    background: rgb(241, 243, 245);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    height: 2rem;
+    border-radius: 1rem;
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    margin-right: 0.875rem;
+    color: rgb(12, 166, 120);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;	
+}
+
+.result_list .subinfo {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    margin-top: 1rem;
+    color: rgb(134, 142, 150);
+    font-size: 0.875rem;
+}
+
+
+
+#spinner {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top:0;
+  left:0;
+}
+
+.loading {
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 64px;
+  height: 64px;
+  margin-top: -32px;
+  margin-left: -32px;
+  border-radius: 50%;
+  border: 8px solid transparent;
+/*   border-top-color: #f19022; */
+/*   border-bottom-color: #f19022; */
+  animation: spinner .8s ease infinite;
+}
+

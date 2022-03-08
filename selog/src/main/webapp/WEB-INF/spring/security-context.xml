@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<bean id="customLoginSuccess" class="io.song.selog.common.security.CustomLoginSuccessHandler"></bean>
+	<bean id="customLoginFailure" class="io.song.selog.common.security.CustomLoginFailureHandler"></bean>
+	<bean id="customAccessDenied" class="io.song.selog.common.security.CustomAccessDeniedHandler"></bean>
+	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
+	<bean id="userDetailsServiceCustom" class="io.song.selog.common.security.UserDetailsServiceCustom"></bean>
+
+	<security:http auto-config="true" use-expressions="true">
+		<!-- 정적 리소스는 모두 접근 허용 -->
+		<security:intercept-url pattern="/resources/**" access="permitAll" />
+
+		<!-- 로그인된 상태에서는 로그인이나 회원가입 화면에 접근 못하도록 함 -->
+		<!-- pattern="controller"에서 매핑해주는 URL 써야함 -->
+		<security:intercept-url pattern="/sign_in" 		   		access="isAnonymous()" />
+		<security:intercept-url pattern="/member/register" 		access="isAnonymous()" />
+		<security:intercept-url pattern="/member/delete_member"	access="isAuthenticated()" />
+		<security:intercept-url pattern="/post/writing"			access="isAuthenticated()" />
+		<security:intercept-url pattern="/setting"		  		access="isAuthenticated()" />
+		<security:intercept-url pattern="/post" 		   		access="permitAll" />
+		<security:intercept-url pattern="/search" 				access="permitAll" />
+		<security:intercept-url pattern="/policy" 				access="permitAll" />
+		<security:intercept-url pattern="/" 					access="permitAll" />
+<!-- 		<security:intercept-url pattern="/**" 		 	   access="permitAll" /> -->
+		<!-- <security:intercept-url pattern="/admin/**" access="hasRole('admin')" /> -->
+
+		<!-- 로그인 설정 -->
+		<security:form-login username-parameter="m_id"
+							 password-parameter="m_pwd"
+							 login-processing-url="/sign_in"
+							 authentication-success-handler-ref="customLoginSuccess"
+							 authentication-failure-handler-ref="customLoginFailure" />
+		<!-- 로그아웃 설정 -->
+		<security:logout logout-url="/sign_out"
+						 logout-success-url="/"
+						 invalidate-session="true"
+						 delete-cookies="true" />
+	
+		<!-- 권한이 없어서 금지된 URI 접속할 때 보여줄 페이지(403 에러 페이지 대체) -->
+		<security:access-denied-handler ref="customAccessDenied"/>
+		
+		<security:session-management>
+			<security:concurrency-control max-sessions="1" expired-url="/"/>
+		</security:session-management>
+	
+	</security:http>
+
+	<!-- DB 연동 설정 -->
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="userDetailsServiceCustom">
+			<security:password-encoder ref="bcryptPasswordEncoder"/>
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+</beans>

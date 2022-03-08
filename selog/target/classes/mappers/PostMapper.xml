@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PostMapper">
+	<insert id="insertPost">
+		INSERT INTO post(p_id, m_id, p_title, p_content, t_name<if test="p_pic != null">, p_pic</if>)
+		VALUES(post_seq.NEXTVAL, #{m_id}, #{p_title}, #{p_content}, #{t_name}<if test="p_pic != null">, #{p_pic}</if>) 
+		<selectKey keyProperty="p_id" order="AFTER" resultType="Integer">
+			SELECT post_seq.NEXTVAL 
+			FROM DUAL
+		</selectKey>
+	</insert>
+	
+	<select id="trendingList" resultType="io.song.selog.post.domain.PostDTO">
+		<![CDATA[
+			SELECT p_id, p.m_id, p_title, p_public_yn, p_published_at, p_updated_at, p_content, p_view_cnt, p_like_cnt, p_comment_cnt, t_name, p_pic, m.m_pic
+			FROM (SELECT /*+ INDEX_DESC(post IDX_POST_PK) */
+	              		ROWNUM rn, p_id, m_id, p_title, p_public_yn, p_published_at, p_updated_at, p_content, p_view_cnt, p_like_cnt, p_comment_cnt, t_name, p_pic
+			      FROM post
+			      WHERE ROWNUM <= #{pageNo} * #{pagePerCnt}
+			      ) p JOIN member m ON p.m_id = m.m_id
+			WHERE rn > (#{pageNo} - 1) * #{pagePerCnt}
+			AND  p_id > 0
+		]]>
+		       	<if test="duration == 'today'.toString()">
+		       		AND TO_CHAR(p_published_at,'RRRR-MM-DD') 
+			    	  = TO_CHAR(SYSDATE, 'RRRR-MM-DD')
+		       	</if>
+		       	<if test="duration == 'week'.toString() || duration == '' || duration == null">
+		       		AND TO_CHAR(p_published_at,'RRRR-MM-DD') 
+					  BETWEEN SYSDATE - TO_CHAR(SYSDATE, 'd')			<!-- Starting from Sunday -->
+			    	  AND TO_CHAR(p_published_at,'RRRR-MM-DD')			<!-- ※제대로 안나와서 (+1)에서 수정함 -->
+		       	</if>
+		       	<if test="duration == 'month'.toString()">
+		       		AND TO_CHAR(p_published_at,'RRRR-MM-DD') 
+					  BETWEEN TRUNC(SYSDATE, 'MM')
+					  AND TO_CHAR(SYSDATE, 'RRRR-MM-DD')
+		       	</if>
+		       	<if test="duration == 'year'.toString()">
+		       		AND TO_CHAR(p_published_at,'YYYY') 
+			    	  = TO_CHAR(SYSDATE, 'YYYY')
+		       	</if>
+			ORDER BY p_view_cnt DESC, p_like_cnt DESC, p_published_at DESC
+	</select>
+	
+	<select id="selTrendListCnt" resultType="Integer">
+		<![CDATA[
+			SELECT COUNT(p_id)
+			FROM post
+			WHERE p_id > 0
+		]]>
+			<if test="duration == 'today'.toString()">
+		       		AND TO_CHAR(p_published_at,'RRRR-MM-DD') 
+			    	  = TO_CHAR(SYSDATE, 'RRRR-MM-DD')
+	       	</if>
+	       	<if test="duration == 'week'.toString() || duration == '' || duration == null">
+	       		AND TO_CHAR(p_published_at,'RRRR-MM-DD') 
+				  BETWEEN SYSDATE - TO_CHAR(SYSDATE, 'd')			<!-- Starting from Sunday -->
+		    	  AND TO_CHAR(p_published_at,'RRRR-MM-DD')			<!-- ※제대로 안나와서 (+1)에서 수정함 -->
+	       	</if>
+	       	<if test="duration == 'month'.toString()">
+	       		AND TO_CHAR(p_published_at,'RRRR-MM-DD') 
+				  BETWEEN TRUNC(SYSDATE, 'MM')
+				  AND TO_CHAR(SYSDATE, 'RRRR-MM-DD')
+	       	</if>
+	       	<if test="duration == 'year'.toString()">
+	       		AND TO_CHAR(p_published_at,'YYYY') 
+		    	  = TO_CHAR(SYSDATE, 'YYYY')
+	       	</if>
+	</select>
+	
+	<select id="recentList" resultType="io.song.selog.post.domain.PostDTO">
+		<![CDATA[
+			SELECT p_id, p.m_id, p_title, p_public_yn, p_published_at, p_updated_at, p_content, p_view_cnt, p_like_cnt, p_comment_cnt, t_name, p_pic, m.m_pic
+			FROM (SELECT /*+ INDEX_DESC(post IDX_POST_PK) */
+	              		ROWNUM rn, p_id, m_id, p_title, p_public_yn, p_published_at, p_updated_at, p_content, p_view_cnt, p_like_cnt, p_comment_cnt, t_name, p_pic
+			      FROM post
+			      WHERE ROWNUM <= #{pageNo} * #{pagePerCnt}
+			      ) p JOIN member m ON p.m_id = m.m_id
+	        WHERE rn > (#{pageNo} - 1) * #{pagePerCnt}
+			AND  p_id > 0
+			ORDER BY p_published_at DESC
+		]]>
+					 <if test="p_updated_at != null">
+						, p_updated_at DESC
+					 </if>
+	</select>
+	
+	<select id="selRecentListCnt" resultType="Integer">
+		<![CDATA[
+			SELECT COUNT(p_id)
+			FROM post
+			WHERE p_id > 0
+		]]>
+	</select>
+	
+	<update id="viewCnt">
+		UPDATE post
+		SET p_view_cnt = p_view_cnt + 1
+		WHERE p_id=#{p_id}
+	</update>
+	
+	<select id="selPostView" resultType="io.song.selog.post.domain.PostDTO">
+		SELECT *
+		FROM post
+		WHERE p_id=#{p_id}
+	</select>
+	
+	<select id="selSearchList" resultType="io.song.selog.post.domain.PostDTO">
+		<![CDATA[
+			SELECT p_id, p.m_id, p_title, p_public_yn, p_published_at, p_updated_at, p_content, p_view_cnt, p_like_cnt, p_comment_cnt, t_name, p_pic, m.m_pic
+			FROM (SELECT /*+ INDEX_DESC(post IDX_POST_PK) */
+	              		ROWNUM rn, p_id, m_id, p_title, p_public_yn, p_published_at, p_updated_at, p_content, p_view_cnt, p_like_cnt, p_comment_cnt, t_name, p_pic
+			      FROM post
+			      WHERE ROWNUM <= #{pageNo} * #{pagePerCnt}
+			      ) p JOIN member m ON p.m_id = m.m_id
+			WHERE rn > (#{pageNo} - 1) * #{pagePerCnt}
+			AND  p_id > 0
+		]]>
+			AND p_title   LIKE '%'||#{keyword}||'%'
+			 OR p_content LIKE '%'||#{keyword}||'%'
+			 OR t_name    LIKE '%'||#{keyword}||'%'
+			ORDER BY p_view_cnt DESC, p_published_at DESC
+	</select>
+	
+	<select id="selSearchListCnt" resultType="Integer">
+		<![CDATA[
+			SELECT COUNT(p_id)
+			FROM post
+			WHERE p_id > 0
+			AND p_title LIKE '%'||#{keyword}||'%'
+			OR p_content LIKE '%'||#{keyword}||'%'
+			OR t_name LIKE '%'||#{keyword}||'%'
+		]]>
+	</select>
+	
+	<select id="selAuthorInfo" resultType="io.song.selog.member.domain.MemberDTO">
+		SELECT *
+		FROM member
+		WHERE m_id=#{m_id}	
+	</select>
+	
+	<delete id="deletePost">
+		DELETE FROM post
+		WHERE p_id=#{p_id}
+	</delete>
+	
+	<update id="updateEditPost">
+		UPDATE post
+		SET  p_updated_at=SYSDATE
+			<if test="p_title != null">
+				, p_title=#{p_title}
+			</if>
+			<if test="p_content != null">
+				, p_content=#{p_content}
+			</if>
+			<if test="t_name != null">
+				, t_name=#{t_name}
+			</if>
+		WHERE p_id=#{p_id}
+	</update>
+	
+	<select id="selLikeYesNo" resultType="Map">
+		SELECT COUNT(p_id) AS LIKECHECK
+		FROM post_like
+		WHERE p_id = #{p_id}
+		AND m_id = #{m_id}
+	</select>
+	
+	<insert id="insertLikeBtn">
+		INSERT INTO post_like(p_id, m_id)
+		VALUES (#{p_id}, #{m_id})
+	</insert>
+	
+	<update id="updateLikeCntPlus">
+		UPDATE post
+		SET p_like_cnt = p_like_cnt + 1
+		WHERE p_id = #{p_id}
+	</update>
+	
+	<delete id="deleteLikeBtn">
+		DELETE FROM post_like
+		WHERE p_id = #{p_id}
+		AND m_id = #{m_id}
+	</delete>
+	
+	<update id="updateLikeCntMinus">
+		UPDATE post
+		SET p_like_cnt = p_like_cnt - 1
+		WHERE p_id = #{p_id}
+	</update>
+	
+	<select id="selLikeCnt" resultType="map">
+		SELECT COUNT(m_id) AS LIKECNT
+		FROM post_like
+		WHERE p_id = #{p_id}
+	</select>
+	
+	<select id="selPrePost" resultType="io.song.selog.post.domain.PostDTO">
+		<![CDATA[
+			SELECT *
+			FROM post
+			WHERE m_id = #{m_id}
+			AND p_id = (SELECT MAX(p_id)
+			            FROM post
+			            WHERE p_id < #{p_id})
+		]]>
+	</select>
+	
+	<select id="selNextPost" resultType="io.song.selog.post.domain.PostDTO">
+		<![CDATA[
+			SELECT *
+			FROM post
+			WHERE m_id = #{m_id}
+			AND p_id = (SELECT MIN(p_id)
+			             FROM post
+			             WHERE p_id > #{p_id})
+		]]>
+	</select>
+	
+	<update id="updateCommentCnt">
+		UPDATE post
+		SET p_comment_cnt = p_comment_cnt + #{amount}
+		WHERE p_id = #{p_id} 
+	</update>
+	
+	
+</mapper>

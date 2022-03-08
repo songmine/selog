@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.song.selog.member.mapper.MemberMapper">
+<!-- <mapper namespace="MemberMapper"> -->
+	<select id="getTime" resultType="String">
+		SELECT SYSDATE
+		FROM DUAL
+	</select>
+	
+	<select id="selIdCheck" resultType="Integer">
+	    SELECT COUNT(m_id)
+	    FROM member
+	    WHERE m_id = #{m_id}
+	</select>	
+	
+	<insert id="insertMember">
+		INSERT INTO member(m_id, m_pwd, m_name, m_intro_short)
+		VALUES(#{m_id}, #{m_pwd}, #{m_name}, #{m_intro_short})
+	</insert>
+	
+	<insert id="insertAuth">
+		INSERT INTO member_auth(m_id, auth)
+		VALUES(#{m_id}, #{auth})
+	</insert>
+	
+	<select id="selSignIn" resultType="String">
+		SELECT *
+		FROM member
+		WHERE m_id=#{m_id}
+		AND m_pwd=#{m_pwd}
+	</select>
+	
+	<select id="getMyInfo" resultType="io.song.selog.member.domain.MemberDTO">
+		SELECT *
+		FROM member
+		WHERE m_id=#{m_id}
+	</select>
+	
+	<delete id="deleteMember">
+		DELETE FROM member
+		WHERE m_id=#{m_id}
+	</delete>
+	
+		<!--이 resultMap은 read 메서드의 MemberDTO로 반환될 것이다.-->
+	<resultMap type="io.song.selog.member.domain.MemberDTO" id="memberMap">
+		<id property="m_id" column="m_id"/>  	    <!-- 조인 -->
+		<result property="m_id" column="m_id"/>     <!--property는 DTO클래스의 프로퍼티(필드) 이름, column는 테이블의 칼럼-->
+		<result property="m_pwd" column="m_pwd"/>
+		<result property="m_name" column="m_name"/>
+<!-- 		<result property="m_intro_short" column="m_intro_short"/> -->
+		<result property="m_registered_at" column="m_registered_at"/>
+		<collection property="authList" resultMap="authMap"></collection>
+	</resultMap>
+	
+	<resultMap type="io.song.selog.member.domain.AuthDTO" id="authMap">
+		<result property="m_id" column="m_id"/>
+		<result property="auth" column="auth"/>
+	</resultMap>
+
+	<select id="read" resultMap="memberMap">
+		SELECT mem.m_id, m_pwd, m_name, enabled, m_registered_at, auth 
+		FROM member mem LEFT OUTER JOIN member_auth auth on mem.m_id = auth.m_id 
+		WHERE mem.m_id = #{m_id}
+	</select>
+	
+	<update id="modifyPwd">
+		UPDATE member
+		SET m_pwd = #{m_pwd}
+		WHERE m_id = #{m_id}
+	</update>
+	
+	<delete id="deleteAuth">
+		DELETE FROM member_auth
+		WHERE m_id = #{m_id}
+	</delete>
+	
+	<update id="modifyMyInfo">
+		UPDATE member
+		SET m_name = #{m_name}, m_intro_short = #{m_intro_short}
+		WHERE m_id = #{m_id}
+	</update>
+	
+    <!-- 프로필 이미지 변경 -->
+    <update id="updateMemberPic">
+        UPDATE member
+        SET m_pic = #{m_pic, jdbcType=VARCHAR}
+        WHERE m_id = #{m_id}
+    </update>
+	
+	
+</mapper>

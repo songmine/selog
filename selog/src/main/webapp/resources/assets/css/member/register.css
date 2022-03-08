@@ -1,0 +1,124 @@
+@charset "UTF-8";
+
+#outer {
+    display: -webkit-box;
+	justify-content: center;
+    width: 768px;
+    margin: 100px auto 0px ;
+    line-height: 1.5;
+}
+
+#inner {
+/* 	    width: 30.2%; */
+/* 		display: inline-block; */
+}
+
+h1#welcome {
+    font-size: 4rem;
+    color: rgb(33, 37, 41);
+    font-weight: bolder;
+    margin: 0px;
+}
+   
+ div#welcome_tip {
+	font-size: 1.5rem;
+    color: rgb(33, 37, 41);
+}
+   
+div#welcome_contents {
+  	    margin-top: 3rem;
+   	margin-bottom: 3rem;
+}
+   
+form[name="frm"] {
+/*      	margin-left: 30%; */
+/*     	font-weight: bold; */
+}
+   
+label {
+	font-weight: bold;
+    font-size: 1.125rem;
+    color: rgb(33, 37, 41);
+    margin-bottom: 1rem;
+    transition: all 0.125s ease-in 0s;
+}
+   
+#m_id:focus, #m_pwd:focus, #m_name:focus, #m_intro_short:focus {
+	font-weight: bold;
+	font-size: 1.125rem;
+	margin-bottom: 1rem;
+	transition: all 0.125s ease-in 0s;
+	outline: none;
+	color: rgb(12, 166, 120);	
+	border-color: rgb(12, 166, 120);
+}
+
+input::-webkit-input-placeholder {
+	color: #ADB5BD;
+}
+   
+#m_id, #m_pwd, #m_name {
+   	display: inline-block;
+   	height: 38px;
+   	width: 268px;
+   	font-size: 24px;
+   	border: none;
+   	border-bottom: 1px solid #000;
+	padding-bottom: 9px;
+   	margin: 22px 0;
+}
+   
+#m_intro_short {
+	display: inline-block;
+   	height: 38px;
+	width: 380px;
+   	font-size: 24px;
+   	border: none;
+   	border-bottom: 1px solid #000;
+   	padding-bottom: 9px;
+   	margin: 22px 0;
+}
+   
+span.nec_star {
+	color: red;
+}
+
+#buttons {
+    margin-top: 6rem;
+}
+
+#buttons .cancle {
+	color: lightGray;
+    height: 3rem;
+    font-size: 1.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    border-radius: 1.5rem;
+    border: none;
+    outline: none;
+    font-weight: bold;
+    word-break: keep-all;
+    background: rgb(233, 236, 239);
+    color: rgb(73, 80, 87);
+    transition: all 0.125s ease-in 0s;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+#buttons .submit {
+	margin-left: 1rem;
+    height: 3rem;
+    font-size: 1.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    border-radius: 1.5rem;
+    border: none;
+    outline: none;
+    font-weight: bold;
+    word-break: keep-all;
+    background: rgb(18, 184, 134);
+    color: white;
+    transition: all 0.125s ease-in 0s;
+    cursor: pointer;
+}
+
